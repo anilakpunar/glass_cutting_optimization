@@ -50,10 +50,26 @@ src/glass_optimizer/
 
 ## Kurulum
 
+### Linux / macOS
+
 ```bash
 pip install -r requirements.txt
 pip install -e .
 ```
+
+### Windows (otomatik)
+
+Aciliste:
+
+```cmd
+setup.bat         :: Sanal ortam + bagimliliklar (ilk seferlik)
+run.bat           :: Ornek girdiyle optimizasyonu calistir
+run_tests.bat     :: Birim testleri calistir
+quick_start.bat   :: Tek tikla: ilk seferde setup + run, sonra sadece run
+```
+
+`quick_start.bat`'a cift tiklayarak sifirdan kurulum + ilk calistirmayi
+yapabilirsiniz. Cikti klasoru bitiminde otomatik Explorer'da acilir.
 
 ## Hizli Baslangic
 
@@ -61,6 +77,14 @@ pip install -e .
 
 ```bash
 python main.py examples/sample_input.json --output output/ --time-limit 30
+```
+
+### Windows
+
+```cmd
+run.bat                                    :: examples\sample_input.json
+run.bat my_job.json                        :: kendi girdiniz
+run.bat my_job.json output_klasoru 60      :: ozel cikti + 60s sure siniri
 ```
 
 ### Programatik

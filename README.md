@@ -50,16 +50,55 @@ src/glass_optimizer/
 
 ## Kurulum
 
-### Linux / macOS
+### Linux / macOS (manuel)
 
 ```bash
 pip install -r requirements.txt
 pip install -e .
 ```
 
+### macOS (otomatik - tavsiye edilen)
+
+**Onkosul**: Mac'te Python 3.9+ yuklu olmali. Yoksa Terminal'de:
+
+```bash
+# Homebrew yuklu degilse once:
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Sonra Python:
+brew install python
+```
+
+**Calistirma**: Depoyu indirin, Terminal'de proje klasorune girin:
+
+```bash
+cd glass_cutting_optimization
+
+# Scriptlere calistirma izni ver (tek seferlik)
+chmod +x setup.sh run.sh run_tests.sh quick_start.sh
+
+# Tek komutla her sey: kurulum + calistirma
+./quick_start.sh
+```
+
+Veya adim adim:
+
+```bash
+./setup.sh        # Sanal ortam + bagimliliklar (ilk seferlik)
+./run.sh          # Ornek girdiyle optimizasyon
+./run_tests.sh    # Birim testler
+```
+
+`run.sh` bitiminde cikti klasoru macOS Finder'da otomatik acilir.
+
+> Not: Mac'te Finder bazen `.sh` dosyalarini cift tiklayinca Terminal'de
+> calistirmaz. Bunun icin: dosyaya sag tik -> "Aciliacak Uygulama" ->
+> "Terminal" secebilir, ya da pratik olarak Terminal'den `./run.sh`
+> diyebilirsiniz.
+
 ### Windows (otomatik)
 
-Aciliste:
+`.bat` dosyalarina cift tiklayin:
 
 ```cmd
 setup.bat         :: Sanal ortam + bagimliliklar (ilk seferlik)
@@ -73,10 +112,18 @@ yapabilirsiniz. Cikti klasoru bitiminde otomatik Explorer'da acilir.
 
 ## Hizli Baslangic
 
-### CLI
+### Manuel CLI (Linux/macOS/Windows)
 
 ```bash
 python main.py examples/sample_input.json --output output/ --time-limit 30
+```
+
+### macOS / Linux
+
+```bash
+./run.sh                                   # examples/sample_input.json
+./run.sh my_job.json                       # kendi girdiniz
+./run.sh my_job.json output_klasoru 60     # ozel cikti + 60s sure siniri
 ```
 
 ### Windows

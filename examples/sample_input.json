@@ -1,0 +1,83 @@
+{
+  "kerf": {
+    "kerf_mm": 3,
+    "edge_trim_mm": 10,
+    "min_offcut_mm": 200
+  },
+  "stock": [
+    {
+      "sheet_id": "JUMBO-4mm-001",
+      "width_mm": 3210,
+      "height_mm": 2250,
+      "glass_type": "float",
+      "thickness_mm": 4.0,
+      "quantity": 3,
+      "unit_cost": 850.00
+    },
+    {
+      "sheet_id": "STD-4mm",
+      "width_mm": 2440,
+      "height_mm": 1830,
+      "glass_type": "float",
+      "thickness_mm": 4.0,
+      "quantity": 2,
+      "unit_cost": 520.00
+    }
+  ],
+  "parts": [
+    {
+      "part_id": "VITRIN-A",
+      "width_mm": 1800,
+      "height_mm": 1200,
+      "quantity": 2,
+      "glass_type": "float",
+      "thickness_mm": 4.0,
+      "allow_rotation": true,
+      "priority": 8,
+      "customer": "ABC Insaat"
+    },
+    {
+      "part_id": "PENCERE-1",
+      "width_mm": 900,
+      "height_mm": 1500,
+      "quantity": 4,
+      "glass_type": "float",
+      "thickness_mm": 4.0,
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "PENCERE-2",
+      "width_mm": 600,
+      "height_mm": 1200,
+      "quantity": 6,
+      "glass_type": "float",
+      "thickness_mm": 4.0,
+      "allow_rotation": true,
+      "priority": 4
+    },
+    {
+      "part_id": "MASA-USTU",
+      "width_mm": 1400,
+      "height_mm": 800,
+      "quantity": 3,
+      "glass_type": "float",
+      "thickness_mm": 4.0,
+      "allow_rotation": false,
+      "grain": "fixed",
+      "priority": 6,
+      "notes": "Yon sabit - desen yonu korunmali"
+    },
+    {
+      "part_id": "KAPI-PANEL",
+      "width_mm": 700,
+      "height_mm": 2100,
+      "quantity": 2,
+      "glass_type": "float",
+      "thickness_mm": 4.0,
+      "allow_rotation": true,
+      "priority": 9,
+      "customer": "XYZ Mobilya"
+    }
+  ]
+}

@@ -6,78 +6,90 @@
   },
   "stock": [
     {
-      "sheet_id": "JUMBO-4mm-001",
-      "width_mm": 3210,
-      "height_mm": 2250,
+      "sheet_id": "DUZ-4mm-PLF",
+      "width_mm": 6000,
+      "height_mm": 3210,
       "glass_type": "float",
       "thickness_mm": 4.0,
-      "quantity": 3,
-      "unit_cost": 850.00
+      "quantity": 25,
+      "unit_cost": 1500.00
     },
     {
-      "sheet_id": "STD-4mm",
-      "width_mm": 2440,
-      "height_mm": 1830,
-      "glass_type": "float",
+      "sheet_id": "LOW-E-TEC15-4mm",
+      "width_mm": 3302,
+      "height_mm": 2134,
+      "glass_type": "low_e",
       "thickness_mm": 4.0,
-      "quantity": 2,
-      "unit_cost": 520.00
+      "quantity": 220,
+      "unit_cost": 1200.00
     }
   ],
   "parts": [
     {
-      "part_id": "VITRIN-A",
-      "width_mm": 1800,
-      "height_mm": 1200,
-      "quantity": 2,
+      "part_id": "DUZ-383x578",
+      "width_mm": 383,
+      "height_mm": 578,
+      "quantity": 246,
       "glass_type": "float",
       "thickness_mm": 4.0,
       "allow_rotation": true,
-      "priority": 8,
-      "customer": "ABC Insaat"
+      "priority": 5,
+      "notes": "Duz cam 4mm - 383 x 578 mm - 246 adet"
     },
     {
-      "part_id": "PENCERE-1",
-      "width_mm": 900,
-      "height_mm": 1500,
-      "quantity": 4,
+      "part_id": "DUZ-320x433",
+      "width_mm": 320,
+      "height_mm": 433,
+      "quantity": 479,
       "glass_type": "float",
       "thickness_mm": 4.0,
       "allow_rotation": true,
-      "priority": 5
+      "priority": 5,
+      "notes": "Duz cam 4mm - 320 x 433 mm - 479 adet"
     },
     {
-      "part_id": "PENCERE-2",
-      "width_mm": 600,
-      "height_mm": 1200,
-      "quantity": 6,
+      "part_id": "DUZ-349x433",
+      "width_mm": 349,
+      "height_mm": 433,
+      "quantity": 231,
       "glass_type": "float",
       "thickness_mm": 4.0,
       "allow_rotation": true,
-      "priority": 4
+      "priority": 5,
+      "notes": "Duz cam 4mm - 349 x 433 mm - 231 adet"
     },
     {
-      "part_id": "MASA-USTU",
-      "width_mm": 1400,
-      "height_mm": 800,
-      "quantity": 3,
-      "glass_type": "float",
-      "thickness_mm": 4.0,
-      "allow_rotation": false,
-      "grain": "fixed",
-      "priority": 6,
-      "notes": "Yon sabit - desen yonu korunmali"
-    },
-    {
-      "part_id": "KAPI-PANEL",
-      "width_mm": 700,
-      "height_mm": 2100,
-      "quantity": 2,
+      "part_id": "DUZ-373x488",
+      "width_mm": 373,
+      "height_mm": 488,
+      "quantity": 672,
       "glass_type": "float",
       "thickness_mm": 4.0,
       "allow_rotation": true,
-      "priority": 9,
-      "customer": "XYZ Mobilya"
+      "priority": 5,
+      "notes": "Duz cam 4mm - 373 x 488 mm - 672 adet"
+    },
+    {
+      "part_id": "LOWE-748x600",
+      "width_mm": 748,
+      "height_mm": 600,
+      "quantity": 1901,
+      "glass_type": "low_e",
+      "thickness_mm": 4.0,
+      "allow_rotation": true,
+      "priority": 5,
+      "notes": "Sert Low-E TEC 15 4mm - asil olcu 748 x 599.5 mm (yari mm yukari yuvarlandi) - 1901 adet"
+    },
+    {
+      "part_id": "LOWE-748x568",
+      "width_mm": 748,
+      "height_mm": 568,
+      "quantity": 1190,
+      "glass_type": "low_e",
+      "thickness_mm": 4.0,
+      "allow_rotation": true,
+      "priority": 5,
+      "notes": "Sert Low-E TEC 15 4mm - asil olcu 748 x 567.1 mm (yukari yuvarlandi) - 1190 adet"
     }
   ]
 }

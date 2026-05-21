@@ -20,6 +20,19 @@ class OptimizerSettings(BaseModel):
     log_search_progress: bool = False
     random_seed: int = 42
 
+    # Olcekleme: yuksek parca sayilarinda CP-SAT'in bos vermemesi icin
+    # her plaka cozumune giden aday parca havuzu kisitlanir.
+    max_parts_per_sheet: int = Field(
+        default=120,
+        ge=8,
+        description="Tek bir plaka CP-SAT modeline gonderilen maks. parca ornegi sayisi",
+    )
+    candidate_area_factor: float = Field(
+        default=1.3,
+        gt=1.0,
+        description="Aday parca alanlari toplaminin, plaka alanina oranla ust siniri",
+    )
+
 
 def default_settings() -> OptimizerSettings:
     return OptimizerSettings()

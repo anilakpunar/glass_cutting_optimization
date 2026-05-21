@@ -90,9 +90,8 @@ class MultiSheetOrchestrator(OptimizerStrategy):
                 break
 
             # Bu plakaya yerlestirilebilecek (ayni tip + kalinlik) parcalari sec
-            candidate_parts = [
-                p for p in remaining if self._part_key(p) == best_key
-            ]
+            matching = [p for p in remaining if self._part_key(p) == best_key]
+            candidate_parts = self._select_candidates_for_sheet(matching, best_sheet)
 
             sheet_sol, placed_ids, status = self.sheet_solver.solve_single_sheet(
                 best_sheet, candidate_parts, kerf
@@ -132,6 +131,46 @@ class MultiSheetOrchestrator(OptimizerStrategy):
             solver_status=last_status,
             kerf=kerf,
         )
+
+    def _select_candidates_for_sheet(
+        self, matching: List[PartOrder], sheet: StockSheet
+    ) -> List[PartOrder]:
+        """Tek plaka CP-SAT modeline gidecek aday parcalari secer.
+
+        Buyuk siparislerde (1000+ parca) tum parcalari modele gondermek
+        CP-SAT'i bogar. Cozuc'un esit tip + kalinlikte tek bir plakaya
+        odaklanmasi icin aday havuzu:
+          - oncelik azalan,
+          - alan azalan,
+        siralanir ve hem parca sayisi hem toplam alan acisindan kisitlanir.
+        """
+        max_count = self.settings.max_parts_per_sheet
+        target_area = int(sheet.area_mm2 * self.settings.candidate_area_factor)
+
+        sorted_parts = sorted(
+            matching, key=lambda p: (-p.priority, -p.area_mm2)
+        )
+
+        selected: List[PartOrder] = []
+        total_count = 0
+        total_area = 0
+        for p in sorted_parts:
+            if total_count >= max_count:
+                break
+            remaining_slots = max_count - total_count
+            remaining_area_budget = max(0, target_area - total_area)
+            qty_by_count = min(p.quantity, remaining_slots)
+            qty_by_area = (
+                remaining_area_budget // p.area_mm2 if p.area_mm2 > 0 else 0
+            )
+            qty = min(qty_by_count, qty_by_area)
+            if qty <= 0:
+                continue
+            selected.append(p.model_copy(update={"quantity": qty}))
+            total_count += qty
+            total_area += qty * p.area_mm2
+
+        return selected if selected else matching
 
     @staticmethod
     def _stock_key(s: StockSheet) -> str:

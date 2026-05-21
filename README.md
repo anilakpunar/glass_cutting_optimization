@@ -192,6 +192,28 @@ print_console_report(result)
 pytest tests/
 ```
 
+## Buyuk Siparisler & Performans
+
+CP-SAT 2D yerlestirme tek bir plakada en fazla ~100-150 parca ornegi
+ile makul surede cozulur. Bu paket binlerce parcali siparisleri
+**sira li plaka cozumu** ile ele alir; her plakaya en fazla
+`max_parts_per_sheet` (default 120) aday verilir.
+
+`examples/sample_input.json` sektorel olcekli ornek icerir:
+
+- Duz cam 4mm 6000x3210 panel: 1628 parca, ~15 plaka
+- Sert Low-E TEC 15 4mm 3302x2134 panel: 3091 parca, ~193 plaka
+
+Toplam ~70 dakika beklenir (default 30 s/plaka). Hizlandirmak icin:
+
+```bash
+./run.sh examples/sample_input.json output 10   # plaka basina 10 s
+```
+
+Cozucu parametrelerini ozellestirmek icin `OptimizerSettings` icindeki
+`max_parts_per_sheet` (default 120) ve `candidate_area_factor` (default
+1.3) degerleri programatik kullanimda ayarlanabilir.
+
 ## Sektorel Notlar
 
 - **Kerf**: Tipik cam kesim 2-4 mm. Default 3 mm.

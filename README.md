@@ -192,27 +192,67 @@ print_console_report(result)
 pytest tests/
 ```
 
-## Buyuk Siparisler & Performans
+## Optimizasyon Stratejileri
 
-CP-SAT 2D yerlestirme tek bir plakada en fazla ~100-150 parca ornegi
-ile makul surede cozulur. Bu paket binlerce parcali siparisleri
-**sira li plaka cozumu** ile ele alir; her plakaya en fazla
-`max_parts_per_sheet` (default 120) aday verilir.
+Paket, tek plaka yerlestirmeyi `SheetSolver` arayuzu uzerinden uc
+farkli yaklasimla cozer:
+
+| Strateji | Algoritma | Hiz | Verim | Kullanim |
+|---|---|---|---|---|
+| `maxrects` | Best Short Side Fit (Jylanki, 2010) | ~ms / plaka | %85-92 | Binlerce parca, hizli ihtiyac |
+| `cpsat` | OR-Tools NoOverlap2D (tam) | s-dk / plaka | Kucuk problemlerde optimal | Az parca, referans |
+| `hybrid` | MaxRects + CP-SAT polish (warm-start AddHint) | s / plaka | **En iyi** | **Varsayilan** |
+
+`hybrid` cozucu MaxRects ile milisaniyede bir baslangic cozumu uretir,
+ardindan CP-SAT'e `AddHint` ile besler; CP-SAT bu noktadan iyilestirmeye
+basladigi icin ayni surede saf CP-SAT'ten cok daha yuksek verim alir.
+
+Strateji secimi:
+
+```bash
+./run.sh examples/sample_input.json output 30 --strategy hybrid     # default
+./run.sh examples/sample_input.json output 0  --strategy maxrects   # en hizli
+./run.sh examples/sample_input.json output 60 --strategy cpsat      # referans
+```
+
+Programatik:
+
+```python
+from glass_optimizer.config.settings import OptimizerSettings
+
+settings = OptimizerSettings(
+    strategy="hybrid",
+    time_limit_s=30.0,
+    cpsat_polish_time_s=8.0,   # MaxRects sonrasi polish suresi
+    max_parts_per_sheet=120,   # CP-SAT modeline gidecek maks parca
+)
+```
+
+### Karsilastirmali Olcum
+
+`examples/sample_input.json` ile 1 duz + 1 Low-E plaka uzerinde:
+
+```
+strategy   placed   util%   time_s   status
+maxrects       89    86.1     0.0    MAXRECTS
+cpsat          76    76.1    40.0    FEASIBLE
+hybrid         90    87.8    16.0    HYBRID-FEASIBLE
+```
+
+Tam olcek (~4700 parca, ~208 plaka) tahmini:
+- `maxrects`: ~5 saniye toplam
+- `hybrid`  : ~30 dakika (polish suresine bagli)
+- `cpsat`  : zamansiz, kapasite kaldirilirsa saatler
+
+## Buyuk Siparisler
 
 `examples/sample_input.json` sektorel olcekli ornek icerir:
 
 - Duz cam 4mm 6000x3210 panel: 1628 parca, ~15 plaka
 - Sert Low-E TEC 15 4mm 3302x2134 panel: 3091 parca, ~193 plaka
 
-Toplam ~70 dakika beklenir (default 30 s/plaka). Hizlandirmak icin:
-
-```bash
-./run.sh examples/sample_input.json output 10   # plaka basina 10 s
-```
-
-Cozucu parametrelerini ozellestirmek icin `OptimizerSettings` icindeki
-`max_parts_per_sheet` (default 120) ve `candidate_area_factor` (default
-1.3) degerleri programatik kullanimda ayarlanabilir.
+Cok buyuk batch'ler icin `--strategy maxrects` ile saniyeler icinde
+bir baslangic plani uretebilir, sonra hibrit ile kalite iyilestirebilirsiniz.
 
 ## Sektorel Notlar
 

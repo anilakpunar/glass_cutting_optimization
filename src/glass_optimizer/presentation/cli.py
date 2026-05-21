@@ -34,6 +34,17 @@ def optimize(
     workers: int = typer.Option(
         8, "--workers", "-w", help="Paralel CP-SAT calisan sayisi"
     ),
+    strategy: str = typer.Option(
+        "hybrid",
+        "--strategy",
+        "-s",
+        help="hybrid (varsayilan) | maxrects | cpsat",
+    ),
+    polish_time: float = typer.Option(
+        8.0,
+        "--polish-time",
+        help="Hybrid icin CP-SAT polish suresi (s, 0 = sadece MaxRects)",
+    ),
     no_visual: bool = typer.Option(
         False, "--no-visual", help="Gorsel PNG uretimini atla"
     ),
@@ -43,7 +54,12 @@ def optimize(
     job = load_job_from_json(job_file)
     validate_job(job.stock, job.parts, job.kerf)
 
-    settings = OptimizerSettings(time_limit_s=time_limit, num_workers=workers)
+    settings = OptimizerSettings(
+        time_limit_s=time_limit,
+        num_workers=workers,
+        strategy=strategy,
+        cpsat_polish_time_s=polish_time,
+    )
     orchestrator = MultiSheetOrchestrator(settings)
     result = orchestrator.solve(job.stock, job.parts, job.kerf)
 

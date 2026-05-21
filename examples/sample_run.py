@@ -21,7 +21,12 @@ def main() -> None:
     job = load_job_from_json(here / "sample_input.json")
     validate_job(job.stock, job.parts, job.kerf)
 
-    settings = OptimizerSettings(time_limit_s=30.0, num_workers=8)
+    settings = OptimizerSettings(
+        strategy="hybrid",        # MaxRects + CP-SAT polish (en iyi kalite)
+        time_limit_s=30.0,
+        cpsat_polish_time_s=8.0,
+        num_workers=8,
+    )
     orchestrator = MultiSheetOrchestrator(settings)
     result = orchestrator.solve(job.stock, job.parts, job.kerf)
 

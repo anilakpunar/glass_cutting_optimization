@@ -1,17 +1,17 @@
 """Coklu plaka orkestrasyonu.
 
-Kullanilan strateji: agirlikli surekli en-iyi-uygun (best-fit greedy)
-+ her plaka icin CP-SAT 2D yerlestirme.
-
-Iterasyon:
-    1. Mevcut stok adaylari icinden, kalan parcalari en cok kapatma
-       potansiyeli olan plakayi sec.
-    2. O plaka icin CP-SAT cozucusunu calistir.
+Sira:
+    1. Mevcut stok adaylari icinden, kalan parcalarin en cok kapatabilecegi
+       plakayi sec (best-fit + greedy).
+    2. Sectigi plaka icin seclili SheetSolver'i (MaxRects / CP-SAT / Hybrid)
+       calistir.
     3. Yerlesen parcalari havuzdan dus, plakayi sonuca ekle.
     4. Tum parcalar yerlesene veya stok bitene kadar tekrarla.
 
-Bu yaklasim, tek bir buyuk CP-SAT problemine gore cok daha hizli
-calisir ve genelde %95+ alan kullanimi saglar.
+Strateji `settings.strategy` ile secilir:
+    - "hybrid"   : MaxRects + CP-SAT polish (varsayilan, en iyi kalite)
+    - "maxrects" : sadece MaxRects (en hizli, binlerce parca icin ideal)
+    - "cpsat"    : sadece CP-SAT (kucuk problemler / referans)
 """
 
 from __future__ import annotations
@@ -29,16 +29,36 @@ from ..domain.models import (
     SheetSolution,
     StockSheet,
 )
-from .base import OptimizerStrategy
+from .base import OptimizerStrategy, SheetSolver
 from .cpsat_solver import CPSATSheetSolver
+from .hybrid_solver import HybridSheetSolver
+from .maxrects_solver import MaxRectsSheetSolver
 
 
 class MultiSheetOrchestrator(OptimizerStrategy):
-    """Coklu stok plakasi icin sekansiyel CP-SAT cozumlemesi."""
+    """Coklu stok plakasi icin sekansiyel plaka cozumlemesi."""
 
-    def __init__(self, settings: OptimizerSettings):
+    def __init__(
+        self,
+        settings: OptimizerSettings,
+        sheet_solver: SheetSolver | None = None,
+    ):
         super().__init__(settings)
-        self.sheet_solver = CPSATSheetSolver(settings)
+        self.sheet_solver = sheet_solver or self._make_solver(settings)
+
+    @staticmethod
+    def _make_solver(settings: OptimizerSettings) -> SheetSolver:
+        s = settings.strategy.lower()
+        if s == "maxrects":
+            return MaxRectsSheetSolver(settings)
+        if s == "cpsat":
+            return CPSATSheetSolver(settings)
+        if s == "hybrid":
+            return HybridSheetSolver(settings)
+        raise ValueError(
+            f"Bilinmeyen strateji: {settings.strategy!r}. "
+            "Gecerli degerler: maxrects, cpsat, hybrid."
+        )
 
     def solve(
         self,
@@ -53,19 +73,16 @@ class MultiSheetOrchestrator(OptimizerStrategy):
         for s in stock:
             key = self._stock_key(s)
             inventory.setdefault(key, []).extend([deepcopy(s) for _ in range(s.quantity)])
-        # Quantity'leri 1'e dusur
         for plates in inventory.values():
             for pl in plates:
                 pl.quantity = 1
 
-        # Parca havuzu - asil siparis (quantity > 1 olabilir)
         remaining: List[PartOrder] = [p.model_copy(deep=True) for p in parts]
 
         sheets_out: List[SheetSolution] = []
         last_status = "UNKNOWN"
 
         while remaining and any(inventory.values()):
-            # Bu turdaki parcalarin tiplerini bul
             type_keys = {self._part_key(p) for p in remaining}
 
             best_sheet: StockSheet | None = None
@@ -75,7 +92,6 @@ class MultiSheetOrchestrator(OptimizerStrategy):
             for key in type_keys:
                 if key not in inventory or not inventory[key]:
                     continue
-                # Bu tip+kalinlikteki en kucuk yetecek plakayi dene (en-iyi-uygun)
                 candidates = sorted(inventory[key], key=lambda s: s.area_mm2)
                 for cand in candidates:
                     matching_parts = [p for p in remaining if self._part_key(p) == key]
@@ -89,24 +105,20 @@ class MultiSheetOrchestrator(OptimizerStrategy):
             if best_sheet is None or best_key is None:
                 break
 
-            # Bu plakaya yerlestirilebilecek (ayni tip + kalinlik) parcalari sec
             matching = [p for p in remaining if self._part_key(p) == best_key]
-            candidate_parts = self._select_candidates_for_sheet(matching, best_sheet)
 
             sheet_sol, placed_ids, status = self.sheet_solver.solve_single_sheet(
-                best_sheet, candidate_parts, kerf
+                best_sheet, matching, kerf
             )
             last_status = status
 
             if not placed_ids:
-                # Bu plakaya higbir sey sigmadi - envantereden cikar, sonraki ile dene
                 inventory[best_key].remove(best_sheet)
                 continue
 
             sheets_out.append(sheet_sol)
             inventory[best_key].remove(best_sheet)
 
-            # Yerlesen parcalari havuzdan dus
             placed_counter: Counter = Counter()
             for pid in placed_ids:
                 base_id = pid.rsplit("#", 1)[0]
@@ -131,46 +143,6 @@ class MultiSheetOrchestrator(OptimizerStrategy):
             solver_status=last_status,
             kerf=kerf,
         )
-
-    def _select_candidates_for_sheet(
-        self, matching: List[PartOrder], sheet: StockSheet
-    ) -> List[PartOrder]:
-        """Tek plaka CP-SAT modeline gidecek aday parcalari secer.
-
-        Buyuk siparislerde (1000+ parca) tum parcalari modele gondermek
-        CP-SAT'i bogar. Cozuc'un esit tip + kalinlikte tek bir plakaya
-        odaklanmasi icin aday havuzu:
-          - oncelik azalan,
-          - alan azalan,
-        siralanir ve hem parca sayisi hem toplam alan acisindan kisitlanir.
-        """
-        max_count = self.settings.max_parts_per_sheet
-        target_area = int(sheet.area_mm2 * self.settings.candidate_area_factor)
-
-        sorted_parts = sorted(
-            matching, key=lambda p: (-p.priority, -p.area_mm2)
-        )
-
-        selected: List[PartOrder] = []
-        total_count = 0
-        total_area = 0
-        for p in sorted_parts:
-            if total_count >= max_count:
-                break
-            remaining_slots = max_count - total_count
-            remaining_area_budget = max(0, target_area - total_area)
-            qty_by_count = min(p.quantity, remaining_slots)
-            qty_by_area = (
-                remaining_area_budget // p.area_mm2 if p.area_mm2 > 0 else 0
-            )
-            qty = min(qty_by_count, qty_by_area)
-            if qty <= 0:
-                continue
-            selected.append(p.model_copy(update={"quantity": qty}))
-            total_count += qty
-            total_area += qty * p.area_mm2
-
-        return selected if selected else matching
 
     @staticmethod
     def _stock_key(s: StockSheet) -> str:

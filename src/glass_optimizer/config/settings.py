@@ -20,8 +20,20 @@ class OptimizerSettings(BaseModel):
     log_search_progress: bool = False
     random_seed: int = 42
 
+    # Strateji secimi
+    strategy: str = Field(
+        default="hybrid",
+        description="maxrects | cpsat | hybrid (MaxRects + CP-SAT polish, default)",
+    )
+    cpsat_polish_time_s: float = Field(
+        default=8.0,
+        ge=0,
+        description="Hybrid stratejide CP-SAT polish suresi (saniye, 0 = kapali)",
+    )
+
     # Olcekleme: yuksek parca sayilarinda CP-SAT'in bos vermemesi icin
-    # her plaka cozumune giden aday parca havuzu kisitlanir.
+    # her plaka CP-SAT modeline giden aday parca havuzu kisitlanir.
+    # MaxRects bu kisitlamaya tabi degildir.
     max_parts_per_sheet: int = Field(
         default=120,
         ge=8,

@@ -9,8 +9,15 @@ tabanli, katmanli mimaride bir Python uygulamasi.
 
 ## Ozellikler
 
-- **CP-SAT 2D yerlestirme**: NoOverlap2D ile matematiksel olarak gecerli
-  cozumler; oncelik agirlikli amac fonksiyonu.
+- **Guillotine-kisitli kesim (varsayilan)**: Cam kesim koprusu duz
+  (edge-to-edge) kestigi icin yerlesim guillotine kesilebilir uretilir:
+  once boylu boyunca, sonra ara kesimler. Klasik bin-packing degil,
+  guillotine 2D cutting-stock.
+- **Homojen-blok yerlestirme**: Her plakaya once tek olcuden izgara
+  dolusu, kalan artiklara sonraki olculer — boylece hem fire hem parca
+  cesitliligi azaltilir.
+- **CP-SAT 2D yerlestirme (alternatif)**: NoOverlap2D ile matematiksel
+  olarak gecerli serbest cozumler; oncelik agirlikli amac fonksiyonu.
 - **Coklu plaka orkestrasyonu**: Farkli boy ve cam tipindeki stoklar
   arasinda en-iyi-uygun secimi (best-fit) ile siralanir.
 - **Kerf (testere kalinligi) ve kenar payi**: Endustriyel parametrelerle
@@ -198,25 +205,33 @@ pytest tests/
 
 ## Optimizasyon Stratejileri
 
-Paket, tek plaka yerlestirmeyi `SheetSolver` arayuzu uzerinden uc
+Paket, tek plaka yerlestirmeyi `SheetSolver` arayuzu uzerinden dort
 farkli yaklasimla cozer:
 
-| Strateji | Algoritma | Hiz | Verim | Kullanim |
+| Strateji | Algoritma | Guillotine? | Hiz | Kullanim |
 |---|---|---|---|---|
-| `maxrects` | Best Short Side Fit (Jylanki, 2010) | ~ms / plaka | %85-92 | Binlerce parca, hizli ihtiyac |
-| `cpsat` | OR-Tools NoOverlap2D (tam) | s-dk / plaka | Kucuk problemlerde optimal | Az parca, referans |
-| `hybrid` | MaxRects + CP-SAT polish (warm-start AddHint) | s / plaka | **En iyi** | **Varsayilan** |
+| `guillotine` | Recursive homojen-blok | **Evet** | ~ms / plaka | **Cam koprusu (varsayilan)** |
+| `maxrects` | Best Short Side Fit (Jylanki, 2010) | Hayir | ~ms / plaka | Su jeti / lazer, hizli |
+| `cpsat` | OR-Tools NoOverlap2D (tam) | Hayir | s-dk / plaka | Kucuk problem / referans |
+| `hybrid` | MaxRects + CP-SAT polish (AddHint) | Hayir | s / plaka | Serbest kesimde en yuksek doluluk |
 
-`hybrid` cozucu MaxRects ile milisaniyede bir baslangic cozumu uretir,
-ardindan CP-SAT'e `AddHint` ile besler; CP-SAT bu noktadan iyilestirmeye
-basladigi icin ayni surede saf CP-SAT'ten cok daha yuksek verim alir.
+**Cam kesim koprusu duz (edge-to-edge) kestigi icin varsayilan ve
+zorunlu strateji `guillotine`'dir.** Bu cozucu yerlesimi her zaman
+guillotine kesilebilir uretir (once boylu boyunca, sonra ara kesimler)
+ve her bolgeye once tek olcuden izgara blok koyarak parca cesitliligini
+de azaltir. Detayli adim adim anlatim:
+[docs/nasil_calisir.md](docs/nasil_calisir.md)
+
+`maxrects` / `hybrid` daha yuksek doluluk verebilir ama yerlesim
+guillotine olmayabilir; sadece su jeti / lazer gibi serbest kesim
+yontemleri icin uygundur.
 
 Strateji secimi:
 
 ```bash
-./run.sh examples/sample_input.json output 30 --strategy hybrid     # default
-./run.sh examples/sample_input.json output 0  --strategy maxrects   # en hizli
-./run.sh examples/sample_input.json output 60 --strategy cpsat      # referans
+./run.sh examples/sample_input.json output 5             # guillotine (varsayilan)
+./run.sh examples/sample_input.json output 5 --strategy maxrects
+./run.sh examples/sample_input.json output 60 --strategy cpsat
 ```
 
 Programatik:
@@ -225,28 +240,25 @@ Programatik:
 from glass_optimizer.config.settings import OptimizerSettings
 
 settings = OptimizerSettings(
-    strategy="hybrid",
+    strategy="guillotine",     # varsayilan; cam koprusu icin zorunlu
     time_limit_s=30.0,
-    cpsat_polish_time_s=8.0,   # MaxRects sonrasi polish suresi
-    max_parts_per_sheet=120,   # CP-SAT modeline gidecek maks parca
 )
 ```
 
 ### Karsilastirmali Olcum
 
-`examples/sample_input.json` ile 1 duz + 1 Low-E plaka uzerinde:
+`examples/sample_input.json` (rebase edilmis ornek) uzerinde:
 
 ```
-strategy   placed   util%   time_s   status
-maxrects       89    86.1     0.0    MAXRECTS
-cpsat          76    76.1    40.0    FEASIBLE
-hybrid         90    87.8    16.0    HYBRID-FEASIBLE
+strategy     plaka  placed  util%   time_s
+guillotine      12    281    74.6    ~0.0
+maxrects        12    291    78.8    ~0.0
 ```
 
-Tam olcek (~4700 parca, ~208 plaka) tahmini:
-- `maxrects`: ~5 saniye toplam
-- `hybrid`  : ~30 dakika (polish suresine bagli)
-- `cpsat`  : zamansiz, kapasite kaldirilirsa saatler
+`maxrects` birkac puan daha yuksek doluluk verir, fakat guillotine
+kesilebilir degildir. Cam kesim koprusu icin `guillotine` gecerli olan
+tek secenektir; doluluktaki kucuk fark, gecerli kesim plani icin
+katlanilan bedeldir (literaturde tipik fark %2-5).
 
 ## Buyuk Siparisler
 

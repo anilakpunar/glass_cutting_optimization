@@ -31,6 +31,7 @@ from ..domain.models import (
 )
 from .base import OptimizerStrategy, SheetSolver
 from .cpsat_solver import CPSATSheetSolver
+from .guillotine_solver import GuillotineSheetSolver
 from .hybrid_solver import HybridSheetSolver
 from .maxrects_solver import MaxRectsSheetSolver
 
@@ -49,6 +50,8 @@ class MultiSheetOrchestrator(OptimizerStrategy):
     @staticmethod
     def _make_solver(settings: OptimizerSettings) -> SheetSolver:
         s = settings.strategy.lower()
+        if s == "guillotine":
+            return GuillotineSheetSolver(settings)
         if s == "maxrects":
             return MaxRectsSheetSolver(settings)
         if s == "cpsat":
@@ -57,7 +60,7 @@ class MultiSheetOrchestrator(OptimizerStrategy):
             return HybridSheetSolver(settings)
         raise ValueError(
             f"Bilinmeyen strateji: {settings.strategy!r}. "
-            "Gecerli degerler: maxrects, cpsat, hybrid."
+            "Gecerli degerler: guillotine, maxrects, cpsat, hybrid."
         )
 
     def solve(

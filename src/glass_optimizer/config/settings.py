@@ -22,8 +22,11 @@ class OptimizerSettings(BaseModel):
 
     # Strateji secimi
     strategy: str = Field(
-        default="hybrid",
-        description="maxrects | cpsat | hybrid (MaxRects + CP-SAT polish, default)",
+        default="guillotine",
+        description=(
+            "guillotine (varsayilan, cam kesim koprusu icin ZORUNLU) | "
+            "maxrects | cpsat | hybrid"
+        ),
     )
     cpsat_polish_time_s: float = Field(
         default=8.0,

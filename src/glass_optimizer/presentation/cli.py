@@ -35,10 +35,10 @@ def optimize(
         8, "--workers", "-w", help="Paralel CP-SAT calisan sayisi"
     ),
     strategy: str = typer.Option(
-        "hybrid",
+        "guillotine",
         "--strategy",
         "-s",
-        help="hybrid (varsayilan) | maxrects | cpsat",
+        help="guillotine (varsayilan, cam koprusu icin zorunlu) | hybrid | maxrects | cpsat",
     ),
     polish_time: float = typer.Option(
         8.0,

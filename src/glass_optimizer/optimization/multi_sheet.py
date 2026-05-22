@@ -149,8 +149,8 @@ class MultiSheetOrchestrator(OptimizerStrategy):
 
     @staticmethod
     def _stock_key(s: StockSheet) -> str:
-        return f"{s.glass_type.value}|{s.thickness_mm}"
+        return s.match_key
 
     @staticmethod
     def _part_key(p: PartOrder) -> str:
-        return f"{p.glass_type.value}|{p.thickness_mm}"
+        return p.match_key

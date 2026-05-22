@@ -36,12 +36,27 @@ class StockSheet(BaseModel):
     height_mm: int = Field(gt=0)
     glass_type: GlassType = GlassType.FLOAT
     thickness_mm: float = Field(default=4.0, gt=0)
+    material: Optional[str] = Field(
+        default=None,
+        description=(
+            "Urun/malzeme kodu. Ayni glass_type+kalinligi paylasan fakat "
+            "birbirine donusturulemeyen urunleri ayirir (orn. Low-E TEC 15 "
+            "ile EKO PRO). Verildiyse eslestirme anahtari budur."
+        ),
+    )
     quantity: int = Field(default=1, ge=1, description="Stoktaki adet")
     unit_cost: float = Field(default=0.0, ge=0, description="Plaka birim maliyeti")
 
     @property
     def area_mm2(self) -> int:
         return self.width_mm * self.height_mm
+
+    @property
+    def match_key(self) -> str:
+        """Parca-stok eslestirme anahtari."""
+        if self.material:
+            return self.material
+        return f"{self.glass_type.value}|{self.thickness_mm}"
 
 
 class PartOrder(BaseModel):
@@ -53,6 +68,10 @@ class PartOrder(BaseModel):
     quantity: int = Field(default=1, ge=1)
     glass_type: GlassType = GlassType.FLOAT
     thickness_mm: float = Field(default=4.0, gt=0)
+    material: Optional[str] = Field(
+        default=None,
+        description="Urun/malzeme kodu (StockSheet.material ile eslesir).",
+    )
     allow_rotation: bool = True
     grain: GrainConstraint = GrainConstraint.NONE
     priority: int = Field(
@@ -70,6 +89,13 @@ class PartOrder(BaseModel):
     @property
     def area_mm2(self) -> int:
         return self.width_mm * self.height_mm
+
+    @property
+    def match_key(self) -> str:
+        """Parca-stok eslestirme anahtari."""
+        if self.material:
+            return self.material
+        return f"{self.glass_type.value}|{self.thickness_mm}"
 
 
 class Placement(BaseModel):

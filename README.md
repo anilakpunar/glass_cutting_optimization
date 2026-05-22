@@ -194,21 +194,25 @@ print_console_report(result)
   "kerf": { "kerf_mm": 3, "edge_trim_mm": 10, "min_offcut_mm": 200 },
   "stock": [
     {
-      "sheet_id": "JUMBO-4mm",
-      "width_mm": 3210,
-      "height_mm": 2250,
-      "glass_type": "float",
+      "sheet_id": "SERT_LOWE_TEC15_4MM_3302x2134",
+      "width_mm": 3302,
+      "height_mm": 2134,
+      "glass_type": "low_e",
       "thickness_mm": 4.0,
-      "quantity": 3,
-      "unit_cost": 850.00
+      "material": "SERT_LOWE_TEC15_4MM",
+      "quantity": 50,
+      "unit_cost": 1200.00
     }
   ],
   "parts": [
     {
       "part_id": "PENCERE-1",
-      "width_mm": 900,
-      "height_mm": 1500,
+      "width_mm": 748,
+      "height_mm": 600,
       "quantity": 4,
+      "glass_type": "low_e",
+      "thickness_mm": 4.0,
+      "material": "SERT_LOWE_TEC15_4MM",
       "allow_rotation": true,
       "grain": "none",
       "priority": 5,
@@ -217,6 +221,25 @@ print_console_report(result)
   ]
 }
 ```
+
+### `material` (urun/malzeme kodu)
+
+`glass_type` ve `thickness_mm` ayni olsa bile birbirine donusturulemeyen
+urunler (orn. **SERT LOW-E TEC 15** ile **SERT LOW-E EKO PRO** — ikisi de
+`low_e` 4mm) ayni plakadan kesilemez. `material` alani bu urunleri ayirir:
+verildiginde **parca yalnizca ayni `material` koduna sahip stok plakaya**
+yerlestirilir. Bos birakilirsa eslestirme `glass_type|thickness_mm`
+uzerinden yapilir (geriye donuk uyumlu).
+
+Bir `material` icin birden fazla plaka boyutu tanimlanabilir; cozucu
+en-iyi-uygun ile aralarindan secer.
+
+### Gercek siparis verisinden uretme
+
+`examples/sample_input.json`, `examples/build_sample_from_order.py` ile
+gercek bir uretim siparisinden uretilmistir (8 farkli urun, ondalikli
+olculer mm'ye yuvarlanir). Kendi tablonuzu islemek icin bu scripti
+ornek alabilirsiniz.
 
 ## Cikti
 
@@ -274,12 +297,12 @@ settings = OptimizerSettings(
 
 ### Karsilastirmali Olcum
 
-`examples/sample_input.json` (rebase edilmis ornek) uzerinde:
+`examples/sample_input.json` (gercek siparis, ~9000 parca) uzerinde:
 
 ```
-strategy     plaka  placed  util%   time_s
-guillotine      12    281    74.6    ~0.0
-maxrects        12    291    78.8    ~0.0
+strategy     plaka   util%   time_s
+guillotine     704    79.2    ~2.0
+maxrects       ~700   ~81     ~2.0
 ```
 
 `maxrects` birkac puan daha yuksek doluluk verir, fakat guillotine
@@ -289,13 +312,14 @@ katlanilan bedeldir (literaturde tipik fark %2-5).
 
 ## Buyuk Siparisler
 
-`examples/sample_input.json` sektorel olcekli ornek icerir:
+`examples/sample_input.json` gercek bir uretim siparisini icerir:
+**8 farkli urun (material)**, 10 stok tanimi, 34 parca kalemi,
+~9000 parca. Guillotine cozucu bunu **~2 saniyede** ~704 plaka uzerinde
+%79 verimle planlar (yerlesemeyen parca yok, malzemeler karismaz).
 
-- Duz cam 4mm 6000x3210 panel: 1628 parca, ~15 plaka
-- Sert Low-E TEC 15 4mm 3302x2134 panel: 3091 parca, ~193 plaka
-
-Cok buyuk batch'ler icin `--strategy maxrects` ile saniyeler icinde
-bir baslangic plani uretebilir, sonra hibrit ile kalite iyilestirebilirsiniz.
+Cok buyuk batch'lerde guillotine zaten saniyeler mertebesindedir;
+serbest kesim (su jeti/lazer) icin `--strategy maxrects` da ayni hizda
+calisir.
 
 ## Sektorel Notlar
 

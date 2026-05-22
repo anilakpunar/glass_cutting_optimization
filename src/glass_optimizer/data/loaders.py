@@ -43,6 +43,7 @@ def load_stock_from_csv(path: str | Path) -> List[StockSheet]:
                     height_mm=int(row["height_mm"]),
                     glass_type=row.get("glass_type", "float"),
                     thickness_mm=float(row.get("thickness_mm", 4.0)),
+                    material=row.get("material") or None,
                     quantity=int(row.get("quantity", 1)),
                     unit_cost=float(row.get("unit_cost", 0.0)),
                 )
@@ -62,6 +63,7 @@ def load_parts_from_csv(path: str | Path) -> List[PartOrder]:
                     quantity=int(row.get("quantity", 1)),
                     glass_type=row.get("glass_type", "float"),
                     thickness_mm=float(row.get("thickness_mm", 4.0)),
+                    material=row.get("material") or None,
                     allow_rotation=str(row.get("allow_rotation", "true")).lower()
                     in ("1", "true", "yes", "evet"),
                     grain=row.get("grain", "none"),

@@ -153,3 +153,26 @@ def test_guillotine_respects_fixed_grain_no_rotation():
     # grain=fixed -> hicbir parca donmemeli
     for p in sol.placements:
         assert p.width_mm == 300 and p.height_mm == 200
+
+
+def test_materials_do_not_mix():
+    """Ayni glass_type+kalinlik ama farkli material -> ayni plakaya karismamali."""
+    stock = [
+        StockSheet(sheet_id="TEC", width_mm=2000, height_mm=1500, glass_type="low_e",
+                   thickness_mm=4.0, material="TEC15", quantity=5),
+        StockSheet(sheet_id="EKO", width_mm=2000, height_mm=1500, glass_type="low_e",
+                   thickness_mm=4.0, material="EKOPRO", quantity=5),
+    ]
+    parts = [
+        PartOrder(part_id="t", width_mm=600, height_mm=500, quantity=4,
+                  glass_type="low_e", thickness_mm=4.0, material="TEC15"),
+        PartOrder(part_id="e", width_mm=600, height_mm=500, quantity=4,
+                  glass_type="low_e", thickness_mm=4.0, material="EKOPRO"),
+    ]
+    result = MultiSheetOrchestrator(_settings()).solve(stock, parts, KerfSettings())
+    assert not result.unplaced_parts
+    for s in result.sheets:
+        for p in s.placements:
+            base = p.part_id.rsplit("#", 1)[0]
+            expected = "t" if s.stock.material == "TEC15" else "e"
+            assert base == expected, "Farkli material ayni plakaya karisti!"

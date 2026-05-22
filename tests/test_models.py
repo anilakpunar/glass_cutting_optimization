@@ -38,6 +38,21 @@ def test_solution_utilization():
     assert sol.utilization == pytest.approx(0.25)
 
 
+def test_match_key_falls_back_to_type_thickness():
+    s = StockSheet(sheet_id="A", width_mm=100, height_mm=100, thickness_mm=4.0)
+    p = PartOrder(part_id="P", width_mm=50, height_mm=50, thickness_mm=4.0)
+    assert s.match_key == p.match_key == "float|4.0"
+
+
+def test_match_key_uses_material_when_set():
+    s = StockSheet(sheet_id="A", width_mm=100, height_mm=100, material="TEC15")
+    p = PartOrder(part_id="P", width_mm=50, height_mm=50, material="TEC15")
+    other = PartOrder(part_id="Q", width_mm=50, height_mm=50, material="EKOPRO")
+    # Ayni glass_type+kalinlik olsa da material farkliysa eslesmemeli
+    assert s.match_key == p.match_key == "TEC15"
+    assert other.match_key != s.match_key
+
+
 def test_result_aggregates():
     stock = StockSheet(sheet_id="A", width_mm=1000, height_mm=1000)
     s1 = SheetSolution(

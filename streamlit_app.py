@@ -53,14 +53,14 @@ def _default_stock_df() -> pd.DataFrame:
     return pd.DataFrame(
         [
             {
-                "sheet_id": "DUZ-4mm-PLF", "width_mm": 6000, "height_mm": 3210,
-                "glass_type": "float", "thickness_mm": 4.0,
-                "quantity": 10, "unit_cost": 1500.0,
+                "sheet_id": "DUZ_CAM_4MM_6000x3210", "width_mm": 6000, "height_mm": 3210,
+                "glass_type": "float", "thickness_mm": 4.0, "material": "DUZ_CAM_4MM",
+                "quantity": 20, "unit_cost": 1500.0,
             },
             {
-                "sheet_id": "LOW-E-TEC15-4mm", "width_mm": 3302, "height_mm": 2134,
-                "glass_type": "low_e", "thickness_mm": 4.0,
-                "quantity": 10, "unit_cost": 1200.0,
+                "sheet_id": "SERT_LOWE_TEC15_4MM_3302x2134", "width_mm": 3302, "height_mm": 2134,
+                "glass_type": "low_e", "thickness_mm": 4.0, "material": "SERT_LOWE_TEC15_4MM",
+                "quantity": 20, "unit_cost": 1200.0,
             },
         ]
     )
@@ -71,13 +71,13 @@ def _default_parts_df() -> pd.DataFrame:
         [
             {"part_id": "DUZ-383x578", "width_mm": 383, "height_mm": 578,
              "quantity": 24, "glass_type": "float", "thickness_mm": 4.0,
-             "allow_rotation": True, "grain": "none", "priority": 5},
+             "material": "DUZ_CAM_4MM", "allow_rotation": True, "grain": "none", "priority": 5},
             {"part_id": "DUZ-320x433", "width_mm": 320, "height_mm": 433,
              "quantity": 47, "glass_type": "float", "thickness_mm": 4.0,
-             "allow_rotation": True, "grain": "none", "priority": 5},
+             "material": "DUZ_CAM_4MM", "allow_rotation": True, "grain": "none", "priority": 5},
             {"part_id": "LOWE-748x600", "width_mm": 748, "height_mm": 600,
              "quantity": 30, "glass_type": "low_e", "thickness_mm": 4.0,
-             "allow_rotation": True, "grain": "none", "priority": 5},
+             "material": "SERT_LOWE_TEC15_4MM", "allow_rotation": True, "grain": "none", "priority": 5},
         ]
     )
 
@@ -149,6 +149,11 @@ with st.sidebar:
 
 # ---- Girdi tablolari --------------------------------------------------------
 st.subheader("📦 Stok Plakalari")
+st.caption(
+    "`material`: urun/malzeme kodu. Ayni cam tipi+kalinligi paylasan ama "
+    "birbirine donusturulemeyen urunler (orn. Low-E TEC 15 ile EKO PRO) "
+    "ayni material'a sahip stok ve parcalar arasinda eslesir."
+)
 stock_df = st.data_editor(
     st.session_state["stock_df"],
     num_rows="dynamic",

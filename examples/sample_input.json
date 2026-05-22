@@ -6,90 +6,480 @@
   },
   "stock": [
     {
-      "sheet_id": "DUZ-4mm-PLF",
+      "sheet_id": "DUZ_CAM_3MM_3210x2250",
+      "width_mm": 3210,
+      "height_mm": 2250,
+      "glass_type": "float",
+      "thickness_mm": 3.0,
+      "material": "DUZ_CAM_3MM",
+      "quantity": 167,
+      "unit_cost": 1100.0
+    },
+    {
+      "sheet_id": "DUZ_CAM_4MM_6000x3210",
       "width_mm": 6000,
       "height_mm": 3210,
       "glass_type": "float",
       "thickness_mm": 4.0,
-      "quantity": 10,
-      "unit_cost": 1500.00
+      "material": "DUZ_CAM_4MM",
+      "quantity": 41,
+      "unit_cost": 1500.0
     },
     {
-      "sheet_id": "LOW-E-TEC15-4mm",
+      "sheet_id": "DUZ_CAM_4MM_3210x2250",
+      "width_mm": 3210,
+      "height_mm": 2250,
+      "glass_type": "float",
+      "thickness_mm": 4.0,
+      "material": "DUZ_CAM_4MM",
+      "quantity": 104,
+      "unit_cost": 1500.0
+    },
+    {
+      "sheet_id": "DUZ_CAM_4MM_3210x2000",
+      "width_mm": 3210,
+      "height_mm": 2000,
+      "glass_type": "float",
+      "thickness_mm": 4.0,
+      "material": "DUZ_CAM_4MM",
+      "quantity": 116,
+      "unit_cost": 1500.0
+    },
+    {
+      "sheet_id": "DUZ_CAM_8MM_3210x2250",
+      "width_mm": 3210,
+      "height_mm": 2250,
+      "glass_type": "float",
+      "thickness_mm": 8.0,
+      "material": "DUZ_CAM_8MM",
+      "quantity": 9,
+      "unit_cost": 2800.0
+    },
+    {
+      "sheet_id": "DUZ_CAM_FUME_4MM_3210x2500",
+      "width_mm": 3210,
+      "height_mm": 2500,
+      "glass_type": "float",
+      "thickness_mm": 4.0,
+      "material": "DUZ_CAM_FUME_4MM",
+      "quantity": 28,
+      "unit_cost": 1700.0
+    },
+    {
+      "sheet_id": "SERT_LOWE_EKOPRO_4MM_3210x2000",
+      "width_mm": 3210,
+      "height_mm": 2000,
+      "glass_type": "low_e",
+      "thickness_mm": 4.0,
+      "material": "SERT_LOWE_EKOPRO_4MM",
+      "quantity": 184,
+      "unit_cost": 1900.0
+    },
+    {
+      "sheet_id": "SERT_LOWE_TEC15_4MM_3302x2134",
       "width_mm": 3302,
       "height_mm": 2134,
       "glass_type": "low_e",
       "thickness_mm": 4.0,
-      "quantity": 10,
-      "unit_cost": 1200.00
+      "material": "SERT_LOWE_TEC15_4MM",
+      "quantity": 337,
+      "unit_cost": 1200.0
+    },
+    {
+      "sheet_id": "YUMUSAK_LOWE_ENERJI_3MM_6000x3210",
+      "width_mm": 6000,
+      "height_mm": 3210,
+      "glass_type": "low_e",
+      "thickness_mm": 3.0,
+      "material": "YUMUSAK_LOWE_ENERJI_3MM",
+      "quantity": 32,
+      "unit_cost": 1300.0
+    },
+    {
+      "sheet_id": "YUMUSAK_LOWE_ENERJI_4MM_6000x3210",
+      "width_mm": 6000,
+      "height_mm": 3210,
+      "glass_type": "low_e",
+      "thickness_mm": 4.0,
+      "material": "YUMUSAK_LOWE_ENERJI_4MM",
+      "quantity": 9,
+      "unit_cost": 1600.0
     }
   ],
   "parts": [
     {
-      "part_id": "DUZ-383x578",
+      "part_id": "DUZ_CAM_3MM-704x1492",
+      "width_mm": 704,
+      "height_mm": 1492,
+      "quantity": 564,
+      "glass_type": "float",
+      "thickness_mm": 3.0,
+      "material": "DUZ_CAM_3MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "DUZ_CAM_3MM-615x1255",
+      "width_mm": 615,
+      "height_mm": 1255,
+      "quantity": 28,
+      "glass_type": "float",
+      "thickness_mm": 3.0,
+      "material": "DUZ_CAM_3MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "DUZ_CAM_3MM-525x1255",
+      "width_mm": 525,
+      "height_mm": 1255,
+      "quantity": 297,
+      "glass_type": "float",
+      "thickness_mm": 3.0,
+      "material": "DUZ_CAM_3MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "DUZ_CAM_3MM-546x917",
+      "width_mm": 546,
+      "height_mm": 917,
+      "quantity": 33,
+      "glass_type": "float",
+      "thickness_mm": 3.0,
+      "material": "DUZ_CAM_3MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "DUZ_CAM_4MM-569x1505",
+      "width_mm": 569,
+      "height_mm": 1505,
+      "quantity": 63,
+      "glass_type": "float",
+      "thickness_mm": 4.0,
+      "material": "DUZ_CAM_4MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "DUZ_CAM_4MM-586x1392",
+      "width_mm": 586,
+      "height_mm": 1392,
+      "quantity": 114,
+      "glass_type": "float",
+      "thickness_mm": 4.0,
+      "material": "DUZ_CAM_4MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "DUZ_CAM_4MM-513x1554",
+      "width_mm": 513,
+      "height_mm": 1554,
+      "quantity": 46,
+      "glass_type": "float",
+      "thickness_mm": 4.0,
+      "material": "DUZ_CAM_4MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "DUZ_CAM_4MM-677x820",
+      "width_mm": 677,
+      "height_mm": 820,
+      "quantity": 82,
+      "glass_type": "float",
+      "thickness_mm": 4.0,
+      "material": "DUZ_CAM_4MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "DUZ_CAM_4MM-383x578",
       "width_mm": 383,
       "height_mm": 578,
-      "quantity": 24,
+      "quantity": 246,
       "glass_type": "float",
       "thickness_mm": 4.0,
+      "material": "DUZ_CAM_4MM",
       "allow_rotation": true,
-      "priority": 5,
-      "notes": "Duz cam 4mm - 383 x 578 mm - 246 adet"
+      "priority": 5
     },
     {
-      "part_id": "DUZ-320x433",
-      "width_mm": 320,
-      "height_mm": 433,
-      "quantity": 47,
-      "glass_type": "float",
-      "thickness_mm": 4.0,
-      "allow_rotation": true,
-      "priority": 5,
-      "notes": "Duz cam 4mm - 320 x 433 mm - 479 adet"
-    },
-    {
-      "part_id": "DUZ-349x433",
-      "width_mm": 349,
-      "height_mm": 433,
-      "quantity": 23,
-      "glass_type": "float",
-      "thickness_mm": 4.0,
-      "allow_rotation": true,
-      "priority": 5,
-      "notes": "Duz cam 4mm - 349 x 433 mm - 231 adet"
-    },
-    {
-      "part_id": "DUZ-373x488",
+      "part_id": "DUZ_CAM_4MM-373x488",
       "width_mm": 373,
       "height_mm": 488,
-      "quantity": 67,
+      "quantity": 672,
       "glass_type": "float",
       "thickness_mm": 4.0,
+      "material": "DUZ_CAM_4MM",
       "allow_rotation": true,
-      "priority": 5,
-      "notes": "Duz cam 4mm - 373 x 488 mm - 672 adet"
+      "priority": 5
     },
     {
-      "part_id": "LOWE-748x600",
+      "part_id": "DUZ_CAM_4MM-349x433",
+      "width_mm": 349,
+      "height_mm": 433,
+      "quantity": 231,
+      "glass_type": "float",
+      "thickness_mm": 4.0,
+      "material": "DUZ_CAM_4MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "DUZ_CAM_4MM-320x433",
+      "width_mm": 320,
+      "height_mm": 433,
+      "quantity": 479,
+      "glass_type": "float",
+      "thickness_mm": 4.0,
+      "material": "DUZ_CAM_4MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "DUZ_CAM_8MM-643x1181",
+      "width_mm": 643,
+      "height_mm": 1181,
+      "quantity": 35,
+      "glass_type": "float",
+      "thickness_mm": 8.0,
+      "material": "DUZ_CAM_8MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "DUZ_CAM_FUME_4MM-592x718",
+      "width_mm": 592,
+      "height_mm": 718,
+      "quantity": 320,
+      "glass_type": "float",
+      "thickness_mm": 4.0,
+      "material": "DUZ_CAM_FUME_4MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "SERT_LOWE_EKOPRO_4MM-1203x773",
+      "width_mm": 1203,
+      "height_mm": 773,
+      "quantity": 468,
+      "glass_type": "low_e",
+      "thickness_mm": 4.0,
+      "material": "SERT_LOWE_EKOPRO_4MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "SERT_LOWE_EKOPRO_4MM-1003x738",
+      "width_mm": 1003,
+      "height_mm": 738,
+      "quantity": 329,
+      "glass_type": "low_e",
+      "thickness_mm": 4.0,
+      "material": "SERT_LOWE_EKOPRO_4MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "SERT_LOWE_EKOPRO_4MM-878x738",
+      "width_mm": 878,
+      "height_mm": 738,
+      "quantity": 152,
+      "glass_type": "low_e",
+      "thickness_mm": 4.0,
+      "material": "SERT_LOWE_EKOPRO_4MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "SERT_LOWE_EKOPRO_4MM-678x772",
+      "width_mm": 678,
+      "height_mm": 772,
+      "quantity": 62,
+      "glass_type": "low_e",
+      "thickness_mm": 4.0,
+      "material": "SERT_LOWE_EKOPRO_4MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "SERT_LOWE_TEC15_4MM-561x1204",
+      "width_mm": 561,
+      "height_mm": 1204,
+      "quantity": 56,
+      "glass_type": "low_e",
+      "thickness_mm": 4.0,
+      "material": "SERT_LOWE_TEC15_4MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "SERT_LOWE_TEC15_4MM-531x1204",
+      "width_mm": 531,
+      "height_mm": 1204,
+      "quantity": 56,
+      "glass_type": "low_e",
+      "thickness_mm": 4.0,
+      "material": "SERT_LOWE_TEC15_4MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "SERT_LOWE_TEC15_4MM-837x574",
+      "width_mm": 837,
+      "height_mm": 574,
+      "quantity": 117,
+      "glass_type": "low_e",
+      "thickness_mm": 4.0,
+      "material": "SERT_LOWE_TEC15_4MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "SERT_LOWE_TEC15_4MM-561x826",
+      "width_mm": 561,
+      "height_mm": 826,
+      "quantity": 216,
+      "glass_type": "low_e",
+      "thickness_mm": 4.0,
+      "material": "SERT_LOWE_TEC15_4MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "SERT_LOWE_TEC15_4MM-748x600",
       "width_mm": 748,
       "height_mm": 600,
-      "quantity": 190,
+      "quantity": 1904,
       "glass_type": "low_e",
       "thickness_mm": 4.0,
+      "material": "SERT_LOWE_TEC15_4MM",
       "allow_rotation": true,
-      "priority": 5,
-      "notes": "Sert Low-E TEC 15 4mm - asil olcu 748 x 599.5 mm (yari mm yukari yuvarlandi) - 1901 adet"
+      "priority": 5
     },
     {
-      "part_id": "LOWE-748x568",
-      "width_mm": 748,
-      "height_mm": 568,
-      "quantity": 119,
+      "part_id": "SERT_LOWE_TEC15_4MM-533x826",
+      "width_mm": 533,
+      "height_mm": 826,
+      "quantity": 130,
       "glass_type": "low_e",
       "thickness_mm": 4.0,
+      "material": "SERT_LOWE_TEC15_4MM",
       "allow_rotation": true,
-      "priority": 5,
-      "notes": "Sert Low-E TEC 15 4mm - asil olcu 748 x 567.1 mm (yukari yuvarlandi) - 1190 adet"
+      "priority": 5
+    },
+    {
+      "part_id": "SERT_LOWE_TEC15_4MM-748x567",
+      "width_mm": 748,
+      "height_mm": 567,
+      "quantity": 1190,
+      "glass_type": "low_e",
+      "thickness_mm": 4.0,
+      "material": "SERT_LOWE_TEC15_4MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "YUMUSAK_LOWE_ENERJI_3MM-704x1255",
+      "width_mm": 704,
+      "height_mm": 1255,
+      "quantity": 60,
+      "glass_type": "low_e",
+      "thickness_mm": 3.0,
+      "material": "YUMUSAK_LOWE_ENERJI_3MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "YUMUSAK_LOWE_ENERJI_3MM-525x1255",
+      "width_mm": 525,
+      "height_mm": 1255,
+      "quantity": 292,
+      "glass_type": "low_e",
+      "thickness_mm": 3.0,
+      "material": "YUMUSAK_LOWE_ENERJI_3MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "YUMUSAK_LOWE_ENERJI_3MM-546x917",
+      "width_mm": 546,
+      "height_mm": 917,
+      "quantity": 16,
+      "glass_type": "low_e",
+      "thickness_mm": 3.0,
+      "material": "YUMUSAK_LOWE_ENERJI_3MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "YUMUSAK_LOWE_ENERJI_3MM-544x915",
+      "width_mm": 544,
+      "height_mm": 915,
+      "quantity": 12,
+      "glass_type": "low_e",
+      "thickness_mm": 3.0,
+      "material": "YUMUSAK_LOWE_ENERJI_3MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "YUMUSAK_LOWE_ENERJI_3MM-395x917",
+      "width_mm": 395,
+      "height_mm": 917,
+      "quantity": 34,
+      "glass_type": "low_e",
+      "thickness_mm": 3.0,
+      "material": "YUMUSAK_LOWE_ENERJI_3MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "YUMUSAK_LOWE_ENERJI_3MM-393x915",
+      "width_mm": 393,
+      "height_mm": 915,
+      "quantity": 26,
+      "glass_type": "low_e",
+      "thickness_mm": 3.0,
+      "material": "YUMUSAK_LOWE_ENERJI_3MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "YUMUSAK_LOWE_ENERJI_3MM-523x636",
+      "width_mm": 523,
+      "height_mm": 636,
+      "quantity": 280,
+      "glass_type": "low_e",
+      "thickness_mm": 3.0,
+      "material": "YUMUSAK_LOWE_ENERJI_3MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "YUMUSAK_LOWE_ENERJI_3MM-229x647",
+      "width_mm": 229,
+      "height_mm": 647,
+      "quantity": 57,
+      "glass_type": "low_e",
+      "thickness_mm": 3.0,
+      "material": "YUMUSAK_LOWE_ENERJI_3MM",
+      "allow_rotation": true,
+      "priority": 5
+    },
+    {
+      "part_id": "YUMUSAK_LOWE_ENERJI_4MM-373x488",
+      "width_mm": 373,
+      "height_mm": 488,
+      "quantity": 416,
+      "glass_type": "low_e",
+      "thickness_mm": 4.0,
+      "material": "YUMUSAK_LOWE_ENERJI_4MM",
+      "allow_rotation": true,
+      "priority": 5
     }
   ]
 }

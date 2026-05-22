@@ -29,7 +29,10 @@ tabanli, katmanli mimaride bir Python uygulamasi.
 - **Maliyet & fire analizi**: Plaka birim maliyeti, hammadde, fire
   degeri, geri kullanilabilir offcut tespiti.
 - **Operasyon plani**: Atolye operatoru icin sirali kesim talimatlari.
-- **Gorsel cikti**: Her plaka icin matplotlib PNG'si (renk kodlu).
+- **Gorsel cikti**: Her plaka icin matplotlib gorseli (ayni olcu ayni
+  renk - homojenlik gorunur).
+- **Web arayuzu**: Streamlit ile girdi girme, calistirma ve sonuc
+  goruntuleme (bkz. asagi).
 - **CLI + programatik API**: typer tabanli komut satiri ya da Python
   import ederek kullanim.
 
@@ -120,6 +123,30 @@ quick_start.bat   :: Tek tikla: ilk seferde setup + run, sonra sadece run
 
 `quick_start.bat`'a cift tiklayarak sifirdan kurulum + ilk calistirmayi
 yapabilirsiniz. Cikti klasoru bitiminde otomatik Explorer'da acilir.
+
+## Web Arayuzu (Streamlit)
+
+Girdileri tablo halinde girip optimizasyonu calistirabilecek ve
+sonuclari (ozet, plaka gorselleri, maliyet, fire, kesim plani) gorebilecek
+bir arayuz:
+
+```bash
+# macOS / Linux
+./run_ui.sh
+
+# Windows
+run_ui.bat
+
+# veya manuel
+streamlit run streamlit_app.py
+```
+
+Arayuz tarayicida `http://localhost:8501` adresinde acilir. Ozellikler:
+- Stok plakalari ve parca siparislerini **tablo editorunde** duzenleme
+  (satir ekle/sil) ya da **JSON yukleme**.
+- Kenar cubugundan strateji, sure, kerf / kenar payi ayari.
+- Sonuc sekmeleri: plaka gorselleri, plaka detaylari, kesim plani.
+- Metin raporunu ve girdiyi JSON olarak indirme.
 
 ## Hizli Baslangic
 

@@ -1,20 +1,22 @@
 """Plaka yerlesimlerinin matplotlib ile gorsellestirilmesi.
 
-Her plaka icin bir PNG dosyasi uretir: plaka cercevesi, kullanilan
-alan (yesil), fire (gri sablonlu), parca etiketleri ve oryantasyon ok
-gosterimleri ile sektorel goruntu olusturur.
+Her plaka icin bir figur uretir: plaka cercevesi, kenar payi, parcalar
+(ayni olcudeki parcalar ayni renkte - homojenlik gorunur) ve etiketler.
+`render_cutting_layouts` bunu PNG'ye yazar; `build_sheet_figure` ise
+figuru dondurur (orn. Streamlit arayuzu icin).
 """
 
 from __future__ import annotations
 
 from pathlib import Path
-from typing import List
+from typing import Dict, List
 
 import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.patches as patches  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.figure import Figure  # noqa: E402
 
 from ..domain.models import OptimizationResult, SheetSolution
 
@@ -28,7 +30,13 @@ _PART_COLORS = [
     "#00B8D9",
     "#FF8B00",
     "#8777D9",
+    "#57D9A3",
+    "#FFC400",
 ]
+
+
+def _base_id(part_id: str) -> str:
+    return part_id.split("#")[0]
 
 
 def render_cutting_layouts(
@@ -40,20 +48,22 @@ def render_cutting_layouts(
     files: List[Path] = []
     for idx, sheet in enumerate(result.sheets, start=1):
         path = out_dir / f"sheet_{idx:02d}_{sheet.stock.sheet_id}.png"
-        _render_one(sheet, idx, path, result.kerf.edge_trim_mm)
+        fig = build_sheet_figure(sheet, idx, result.kerf.edge_trim_mm)
+        fig.savefig(path, dpi=120, bbox_inches="tight")
+        plt.close(fig)
         files.append(path)
     return files
 
 
-def _render_one(
-    sheet: SheetSolution, idx: int, path: Path, edge_trim_mm: int
-) -> None:
+def build_sheet_figure(
+    sheet: SheetSolution, idx: int, edge_trim_mm: int
+) -> Figure:
+    """Tek plakanin matplotlib figurunu uretir ve dondurur."""
     W = sheet.stock.width_mm
     H = sheet.stock.height_mm
 
     fig, ax = plt.subplots(figsize=(10, 10 * H / W if W else 10))
 
-    # Plaka cercevesi
     ax.add_patch(
         patches.Rectangle(
             (0, 0), W, H,
@@ -61,53 +71,41 @@ def _render_one(
         )
     )
 
-    # Kenar payi (edge trim) bolgesi
     if edge_trim_mm > 0:
-        ax.add_patch(
-            patches.Rectangle(
-                (0, 0), W, edge_trim_mm,
-                facecolor="#DFE1E6", alpha=0.6, edgecolor="none",
+        for rect in (
+            (0, 0, W, edge_trim_mm),
+            (0, H - edge_trim_mm, W, edge_trim_mm),
+            (0, 0, edge_trim_mm, H),
+            (W - edge_trim_mm, 0, edge_trim_mm, H),
+        ):
+            ax.add_patch(
+                patches.Rectangle(
+                    (rect[0], rect[1]), rect[2], rect[3],
+                    facecolor="#DFE1E6", alpha=0.6, edgecolor="none",
+                )
             )
-        )
-        ax.add_patch(
-            patches.Rectangle(
-                (0, H - edge_trim_mm), W, edge_trim_mm,
-                facecolor="#DFE1E6", alpha=0.6, edgecolor="none",
-            )
-        )
-        ax.add_patch(
-            patches.Rectangle(
-                (0, 0), edge_trim_mm, H,
-                facecolor="#DFE1E6", alpha=0.6, edgecolor="none",
-            )
-        )
-        ax.add_patch(
-            patches.Rectangle(
-                (W - edge_trim_mm, 0), edge_trim_mm, H,
-                facecolor="#DFE1E6", alpha=0.6, edgecolor="none",
-            )
-        )
 
-    # Parcalar
-    for i, p in enumerate(sheet.placements):
-        color = _PART_COLORS[i % len(_PART_COLORS)]
+    # Ayni olcudeki (ayni base id) parcalar ayni renkte
+    color_map: Dict[str, str] = {}
+    for p in sheet.placements:
+        base = _base_id(p.part_id)
+        if base not in color_map:
+            color_map[base] = _PART_COLORS[len(color_map) % len(_PART_COLORS)]
         ax.add_patch(
             patches.Rectangle(
                 (p.x_mm, p.y_mm), p.width_mm, p.height_mm,
-                linewidth=1.5, edgecolor="black",
-                facecolor=color, alpha=0.7,
+                linewidth=1.2, edgecolor="black",
+                facecolor=color_map[base], alpha=0.78,
             )
         )
-        cx = p.x_mm + p.width_mm / 2
-        cy = p.y_mm + p.height_mm / 2
-        label = f"{p.part_id}\n{p.width_mm}x{p.height_mm}"
+        label = f"{base}\n{p.width_mm}x{p.height_mm}"
         if p.orientation.value == "rotated_90":
             label += "\n[90°]"
         ax.annotate(
             label,
-            xy=(cx, cy),
+            xy=(p.x_mm + p.width_mm / 2, p.y_mm + p.height_mm / 2),
             ha="center", va="center",
-            fontsize=8, color="black", fontweight="bold",
+            fontsize=7, color="black", fontweight="bold",
         )
 
     util = sheet.utilization * 100
@@ -122,7 +120,5 @@ def _render_one(
     ax.set_xlabel("Genislik (mm)")
     ax.set_ylabel("Yukseklik (mm)")
     ax.grid(True, linestyle="--", alpha=0.3)
-
-    plt.tight_layout()
-    plt.savefig(path, dpi=120, bbox_inches="tight")
-    plt.close(fig)
+    fig.tight_layout()
+    return fig

@@ -42,6 +42,38 @@ def validate_job(
                 "sigmiyor; kenar payi ve rotasyon kontrol edin."
             )
 
+    _validate_breakage(parts, kerf)
+
+
+def _validate_breakage(parts: List[PartOrder], kerf: KerfSettings) -> None:
+    """Kirma masasi (breakout) kurallarini dogrular.
+
+    Cam, kesildikten sonra masada kirilarak ayristirilir; cok kucuk ya da
+    asiri ince-uzun parcalar kirma sirasinda catlar/dagilir.
+    """
+    errors: List[str] = []
+    for p in parts:
+        short = min(p.width_mm, p.height_mm)
+        long = max(p.width_mm, p.height_mm)
+
+        if kerf.min_part_mm and short < kerf.min_part_mm:
+            errors.append(
+                f"  '{p.part_id}' {p.width_mm}x{p.height_mm}: en kucuk kenar "
+                f"{short} mm < min_part_mm ({kerf.min_part_mm} mm) - kirma "
+                "masasinda guvenle elde edilemez."
+            )
+        if kerf.max_aspect_ratio and short > 0 and (long / short) > kerf.max_aspect_ratio:
+            errors.append(
+                f"  '{p.part_id}' {p.width_mm}x{p.height_mm}: en/boy orani "
+                f"{long / short:.1f} > max_aspect_ratio ({kerf.max_aspect_ratio}) "
+                "- kirma sirasinda esneyip catlayabilir."
+            )
+
+    if errors:
+        raise ValidationError(
+            "Kirma masasi kurallari ihlali:\n" + "\n".join(errors)
+        )
+
 
 def _fits_into_any_stock(
     part: PartOrder, stock: List[StockSheet], kerf: KerfSettings

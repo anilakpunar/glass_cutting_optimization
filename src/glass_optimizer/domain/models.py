@@ -15,7 +15,7 @@ from .enums import GlassType, GrainConstraint, CutOrientation
 
 
 class KerfSettings(BaseModel):
-    """Testere / kesici kalinligi ve guvenlik paylari."""
+    """Testere / kesici kalinligi, guvenlik paylari ve kirma kurallari."""
 
     kerf_mm: int = Field(default=3, ge=0, description="Kesim sirasinda kaybedilen mm")
     edge_trim_mm: int = Field(
@@ -25,6 +25,34 @@ class KerfSettings(BaseModel):
         default=100,
         ge=0,
         description="Bu degerin altindaki fire parcalari yeniden kullanilamaz sayilir",
+    )
+
+    # --- Kirma masasi (breakout) kurallari: cam catlamasini onler ---
+    min_part_mm: int = Field(
+        default=50,
+        ge=0,
+        description=(
+            "Kirma masasinda guvenle koparilabilen/elde edilebilen en kucuk "
+            "parca kenari. Daha kucuk parcalar reddedilir (0 = kural kapali)."
+        ),
+    )
+    max_aspect_ratio: float = Field(
+        default=12.0,
+        ge=0,
+        description=(
+            "Parca uzun/kisa kenar orani ust siniri. Asiri ince-uzun parcalar "
+            "kirma sirasinda esneyip catlar (ozellikle ince cam). 0 = kapali."
+        ),
+    )
+    min_break_strip_mm: int = Field(
+        default=50,
+        ge=0,
+        description=(
+            "Kirma masasinda temiz koparilabilen en ince serit. Bir kesimin "
+            "yaninda bundan ince serit birakilirsa o cizgi temiz kirilamaz; "
+            "cozucu boyle ince serit olusturmaz, bu bolgeyi fire birakir "
+            "(0 = kural kapali)."
+        ),
     )
 
 

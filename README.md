@@ -276,6 +276,25 @@ result = MultiSheetOrchestrator(OptimizerSettings()).solve(
 )
 ```
 
+## Kirma Masasi Kurallari (Cam Catlamasini Onleme)
+
+Cam, kesildikten sonra **kirma masasinda** skor cizgileri boyunca
+koparilarak ayristirilir. Cok kucuk, asiri ince-uzun parcalar veya cok
+ince fire seritleri bu asamada temiz kirilmaz, catlar/dagilir. Bunu
+onlemek icin `kerf` (KerfSettings) altinda uc kural vardir:
+
+| Parametre | Varsayilan | Anlami |
+|---|---|---|
+| `min_part_mm` | 50 | Masada guvenle elde edilebilen en kucuk parca kenari; daha kucugu **reddedilir** (dogrulama hatasi) |
+| `max_aspect_ratio` | 12.0 | Parca uzun/kisa kenar orani ust siniri; asiri ince-uzun parca kirilirken esner, **reddedilir** |
+| `min_break_strip_mm` | 50 | Temiz koparilabilen en ince serit; cozucu bir kesim yaninda bundan ince serit (sliver) **birakmaz** |
+
+İlk ikisi girdi dogrulamasinda kontrol edilir (ihlalde acik hata). Ucuncu
+kural guillotine cozucude aktiftir: bir izgara blogun kenarinda
+`0 < serit < min_break_strip_mm` olacaksa, cozucu sutun/satir sayisini
+azaltarak seridi ya 0 ya da koparilabilir genislige tasir. Her uc kural
+da `0` verilerek kapatilabilir.
+
 ## Cikti
 
 - `output/report.txt` — Detayli rapor (maliyet, fire, kesim plani)

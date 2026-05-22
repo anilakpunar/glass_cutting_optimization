@@ -124,8 +124,9 @@ def main() -> None:
 
         for (pw, ph) in sorted(plates[material], key=lambda p: -p[0] * p[1]):
             plate_area = pw * ph
-            # ~%70 doluluk varsayimi ile yeterli plaka (guillotine firesi payi)
-            qty = math.ceil(total_area / plate_area / 0.70) + 3
+            # ~%62 doluluk varsayimi ile yeterli plaka (guillotine + kirma
+            # kurallari fire payi dahil)
+            qty = math.ceil(total_area / plate_area / 0.62) + 3
             stock.append({
                 "sheet_id": f"{material}_{pw}x{ph}",
                 "width_mm": pw,

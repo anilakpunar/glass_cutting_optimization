@@ -163,6 +163,21 @@ with st.sidebar:
         st.session_state.get("min_offcut_mm", 100),
     )
 
+    st.subheader("Kirma Masasi Kurallari")
+    st.caption("Camin kirma masasinda catlamamasi icin guvenlik kurallari (0 = kapali).")
+    min_part_mm = st.number_input(
+        "Min. parca kenari (mm)", 0, 1000, 50,
+        help="Bundan kucuk parcalar masada guvenle elde edilemez; reddedilir.",
+    )
+    max_aspect_ratio = st.number_input(
+        "Max. en/boy orani", 0.0, 100.0, 12.0, step=1.0,
+        help="Asiri ince-uzun parcalar kirilirken esneyip catlar.",
+    )
+    min_break_strip_mm = st.number_input(
+        "Min. kirilabilir serit (mm)", 0, 1000, 50,
+        help="Bir kesim yaninda bundan ince serit birakilmaz (temiz kirilamaz).",
+    )
+
     st.divider()
     st.subheader("Dosyadan Yukle")
     uploaded = st.file_uploader(
@@ -238,6 +253,9 @@ def _build_models():
         kerf_mm=int(kerf_mm),
         edge_trim_mm=int(edge_trim_mm),
         min_offcut_mm=int(min_offcut_mm),
+        min_part_mm=int(min_part_mm),
+        max_aspect_ratio=float(max_aspect_ratio),
+        min_break_strip_mm=int(min_break_strip_mm),
     )
     stock = [StockSheet(**row) for row in stock_df.to_dict(orient="records")]
     parts = [PartOrder(**row) for row in parts_df.to_dict(orient="records")]

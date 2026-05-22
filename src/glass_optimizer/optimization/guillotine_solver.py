@@ -106,7 +106,10 @@ class GuillotineSheetSolver(SheetSolver):
         placements: List[Placement],
         used_count: Dict[str, int],
     ) -> None:
-        if rect.w < self.MIN_DIM or rect.h < self.MIN_DIM:
+        # Kirma masasinda koparilamayacak kadar ince bolgeleri isleme:
+        # bu serit fire kalir, parcalanmaya calisilmaz.
+        min_strip = max(self.MIN_DIM, kerf.min_break_strip_mm)
+        if rect.w < min_strip or rect.h < min_strip:
             return
 
         block = self._best_block(rect, parts, pool, kerf)
@@ -154,8 +157,8 @@ class GuillotineSheetSolver(SheetSolver):
         topB = _Rect(rect.x, rect.y + block_h + k, block_w, top_h)
         rightB = _Rect(rect.x + block_w + k, rect.y, right_w, rect.h)
 
-        scoreA = max(self._eff_area(topA), self._eff_area(rightA))
-        scoreB = max(self._eff_area(topB), self._eff_area(rightB))
+        scoreA = max(self._eff_area(topA, min_strip), self._eff_area(rightA, min_strip))
+        scoreB = max(self._eff_area(topB, min_strip), self._eff_area(rightB, min_strip))
 
         if scoreA >= scoreB:
             top, right = topA, rightA
@@ -167,8 +170,8 @@ class GuillotineSheetSolver(SheetSolver):
         self._pack(first, parts, pool, kerf, placements, used_count)
         self._pack(second, parts, pool, kerf, placements, used_count)
 
-    def _eff_area(self, rect: _Rect) -> int:
-        if rect.w < self.MIN_DIM or rect.h < self.MIN_DIM:
+    def _eff_area(self, rect: _Rect, min_strip: int = 1) -> int:
+        if rect.w < min_strip or rect.h < min_strip:
             return 0
         return rect.area
 
@@ -186,6 +189,7 @@ class GuillotineSheetSolver(SheetSolver):
         azaltma). Esitlikte yuksek oncelikli (acil) siparis one cikar.
         """
         k = kerf.kerf_mm
+        min_strip = max(self.MIN_DIM, kerf.min_break_strip_mm)
         best: Optional[_Block] = None
         best_key: Optional[Tuple[int, int]] = None
 
@@ -211,6 +215,11 @@ class GuillotineSheetSolver(SheetSolver):
 
                 cap = max_cols * max_rows
                 gc, gr = self._fit_grid(max_cols, max_rows, min(cap, pool[p.part_id]))
+                # Kirma kurali: blok kenarinda koparilamayacak ince serit
+                # (sliver) birakma. Sutun/satir sayisini, kalan serit 0 veya
+                # >= min_strip olacak sekilde ayarla.
+                gc = self._avoid_sliver(gc, pw, rect.w, k, min_strip)
+                gr = self._avoid_sliver(gr, ph, rect.h, k, min_strip)
                 if gc * gr <= 0:
                     continue
 
@@ -221,6 +230,20 @@ class GuillotineSheetSolver(SheetSolver):
                     best = (p, pw, ph, rotated, gc, gr)
 
         return best
+
+    @staticmethod
+    def _avoid_sliver(count: int, cell: int, avail: int, k: int, min_strip: int) -> int:
+        """Kalan seridi 0 veya >= min_strip yapacak en buyuk sayiyi dondurur.
+
+        Blok ile bolge kenari arasinda kirma masasinda koparilamayacak ince
+        bir serit (0 < serit < min_strip) kalmasini engeller.
+        """
+        while count > 0:
+            leftover = avail - (count * cell + (count - 1) * k)
+            if leftover <= 0 or leftover >= min_strip:
+                return count
+            count -= 1
+        return 0
 
     @staticmethod
     def _fit_grid(max_cols: int, max_rows: int, n: int) -> Tuple[int, int]:

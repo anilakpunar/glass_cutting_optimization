@@ -12,7 +12,7 @@
       "glass_type": "float",
       "thickness_mm": 3.0,
       "material": "DUZ_CAM_3MM",
-      "quantity": 167,
+      "quantity": 188,
       "unit_cost": 1100.0
     },
     {
@@ -22,7 +22,7 @@
       "glass_type": "float",
       "thickness_mm": 4.0,
       "material": "DUZ_CAM_4MM",
-      "quantity": 41,
+      "quantity": 46,
       "unit_cost": 1500.0
     },
     {
@@ -32,7 +32,7 @@
       "glass_type": "float",
       "thickness_mm": 4.0,
       "material": "DUZ_CAM_4MM",
-      "quantity": 104,
+      "quantity": 117,
       "unit_cost": 1500.0
     },
     {
@@ -42,7 +42,7 @@
       "glass_type": "float",
       "thickness_mm": 4.0,
       "material": "DUZ_CAM_4MM",
-      "quantity": 116,
+      "quantity": 131,
       "unit_cost": 1500.0
     },
     {
@@ -62,7 +62,7 @@
       "glass_type": "float",
       "thickness_mm": 4.0,
       "material": "DUZ_CAM_FUME_4MM",
-      "quantity": 28,
+      "quantity": 31,
       "unit_cost": 1700.0
     },
     {
@@ -72,7 +72,7 @@
       "glass_type": "low_e",
       "thickness_mm": 4.0,
       "material": "SERT_LOWE_EKOPRO_4MM",
-      "quantity": 184,
+      "quantity": 207,
       "unit_cost": 1900.0
     },
     {
@@ -82,7 +82,7 @@
       "glass_type": "low_e",
       "thickness_mm": 4.0,
       "material": "SERT_LOWE_TEC15_4MM",
-      "quantity": 337,
+      "quantity": 380,
       "unit_cost": 1200.0
     },
     {
@@ -92,7 +92,7 @@
       "glass_type": "low_e",
       "thickness_mm": 3.0,
       "material": "YUMUSAK_LOWE_ENERJI_3MM",
-      "quantity": 32,
+      "quantity": 36,
       "unit_cost": 1300.0
     },
     {
@@ -102,7 +102,7 @@
       "glass_type": "low_e",
       "thickness_mm": 4.0,
       "material": "YUMUSAK_LOWE_ENERJI_4MM",
-      "quantity": 9,
+      "quantity": 10,
       "unit_cost": 1600.0
     }
   ],

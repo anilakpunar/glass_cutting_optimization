@@ -241,6 +241,41 @@ gercek bir uretim siparisinden uretilmistir (8 farkli urun, ondalikli
 olculer mm'ye yuvarlanir). Kendi tablonuzu islemek icin bu scripti
 ornek alabilirsiniz.
 
+## Excel ile Girdi
+
+Atolyelerin yaygin kullandigi siparis tablosu formatindaki Excel (.xlsx)
+dosyasi dogrudan okunabilir:
+
+| PLAKA TIPI | PLAKA EBAT | URUN EN | URUN BOY | URUN MIKTARI |
+|---|---|---|---|---|
+| DUZ CAM 4 MM | 6000X3210 | 383.000 | 578.000 | 246 |
+| SERT LOW-E TEC 15 4 MM | 3302X2134 | 748.000 | 599.500 | 300 |
+
+Cozumleyici otomatik olarak:
+- **material kodu** uretir (her benzersiz "PLAKA TIPI" ayri urun),
+- **glass_type** ve **kalinlik** degerlerini urun adindan cikarir,
+- **plaka boyutunu** "6000X3210" gibi metinden ayristirir,
+- **ondalikli olculeri** mm'ye yuvarlar (599.500 -> 600, 1.554.000 -> 1554),
+- her material icin yeterli stok adedini hesaplar.
+
+Kolon adlari esnek eslestirilir (TR/EN, buyuk/kucuk harf). Ornek dosya:
+`examples/siparis_ornek.xlsx`.
+
+**Web arayuzunden:** kenar cubugundaki "Dosyadan Yukle" ile .xlsx secin.
+
+**Programatik:**
+
+```python
+from glass_optimizer.data.loaders import load_order_table_from_excel
+from glass_optimizer.optimization.multi_sheet import MultiSheetOrchestrator
+from glass_optimizer.config.settings import OptimizerSettings
+
+job = load_order_table_from_excel("siparisim.xlsx")
+result = MultiSheetOrchestrator(OptimizerSettings()).solve(
+    job.stock, job.parts, job.kerf
+)
+```
+
 ## Cikti
 
 - `output/report.txt` — Detayli rapor (maliyet, fire, kesim plani)

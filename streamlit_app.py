@@ -28,6 +28,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "src"))
 
 from glass_optimizer.config.settings import OptimizerSettings  # noqa: E402
+from glass_optimizer.data.loaders import load_order_table_from_excel  # noqa: E402
 from glass_optimizer.data.validators import ValidationError, validate_job  # noqa: E402
 from glass_optimizer.domain.enums import GlassType, GrainConstraint  # noqa: E402
 from glass_optimizer.domain.models import (  # noqa: E402
@@ -98,6 +99,31 @@ def _load_json_into_state(data: dict) -> None:
         st.session_state["parts_df"] = df
 
 
+def _job_into_state(job) -> None:
+    """Bir Job (Excel'den uretilen) tablolari oturuma yazar."""
+    st.session_state["kerf_mm"] = job.kerf.kerf_mm
+    st.session_state["edge_trim_mm"] = job.kerf.edge_trim_mm
+    st.session_state["min_offcut_mm"] = job.kerf.min_offcut_mm
+    st.session_state["stock_df"] = pd.DataFrame([
+        {
+            "sheet_id": s.sheet_id, "width_mm": s.width_mm, "height_mm": s.height_mm,
+            "glass_type": s.glass_type.value, "thickness_mm": s.thickness_mm,
+            "material": s.material, "quantity": s.quantity, "unit_cost": s.unit_cost,
+        }
+        for s in job.stock
+    ])
+    st.session_state["parts_df"] = pd.DataFrame([
+        {
+            "part_id": p.part_id, "width_mm": p.width_mm, "height_mm": p.height_mm,
+            "quantity": p.quantity, "glass_type": p.glass_type.value,
+            "thickness_mm": p.thickness_mm, "material": p.material,
+            "allow_rotation": p.allow_rotation, "grain": p.grain.value,
+            "priority": p.priority,
+        }
+        for p in job.parts
+    ])
+
+
 # ---- Oturum durumu ----------------------------------------------------------
 if "stock_df" not in st.session_state:
     st.session_state["stock_df"] = _default_stock_df()
@@ -138,14 +164,33 @@ with st.sidebar:
     )
 
     st.divider()
-    st.subheader("JSON Yukle")
-    uploaded = st.file_uploader("Is dosyasi (.json)", type=["json"])
-    if uploaded is not None:
+    st.subheader("Dosyadan Yukle")
+    uploaded = st.file_uploader(
+        "JSON is dosyasi veya siparis Excel'i (.xlsx)",
+        type=["json", "xlsx", "xls"],
+        help=(
+            "JSON: stock+parts. Excel: siparis tablosu "
+            "(PLAKA TIPI, PLAKA EBAT, URUN EN, URUN BOY, URUN MIKTARI). "
+            "Excel'de material/cam tipi/kalinlik urun adindan turetilir."
+        ),
+    )
+    if uploaded is not None and not st.session_state.get("_loaded_" + uploaded.name):
         try:
-            _load_json_into_state(json.loads(uploaded.read().decode("utf-8")))
-            st.success("JSON yuklendi. Tablolar guncellendi.")
+            name = uploaded.name.lower()
+            if name.endswith(".json"):
+                _load_json_into_state(json.loads(uploaded.read().decode("utf-8")))
+                st.success("JSON yuklendi. Tablolar guncellendi.")
+            else:
+                job = load_order_table_from_excel(uploaded)
+                _job_into_state(job)
+                st.success(
+                    f"Excel yuklendi: {len(job.stock)} stok, {len(job.parts)} "
+                    "parca kalemi. Tablolar guncellendi."
+                )
+            st.session_state["_loaded_" + uploaded.name] = True
+            st.rerun()
         except Exception as exc:  # noqa: BLE001
-            st.error(f"JSON okunamadi: {exc}")
+            st.error(f"Dosya okunamadi: {exc}")
 
 # ---- Girdi tablolari --------------------------------------------------------
 st.subheader("📦 Stok Plakalari")

@@ -3,6 +3,10 @@
 Endustriyel cam kesim operasyonlari icin Google OR-Tools (CP-SAT)
 tabanli, katmanli mimaride bir Python uygulamasi.
 
+> **Yeni baslayanlar icin:** Optimizasyonun nasil calistigini basit bir
+> ornek uzerinden adim adim ve gorsel olarak anlatan dokuman:
+> [docs/nasil_calisir.md](docs/nasil_calisir.md)
+
 ## Ozellikler
 
 - **CP-SAT 2D yerlestirme**: NoOverlap2D ile matematiksel olarak gecerli
